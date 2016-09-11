@@ -13,8 +13,8 @@ require 'nngraph'
 require 'lfs'
 require 'util/misc.lua'
 
-BatchLoader = require 'util.BatchLoaderUnk'
-model_utils = require 'util.model_utils'
+BatchLoader = require 'util/BatchLoaderUnk.lua'
+model_utils = require 'util/model_utils.lua'
 
 local stringx = require('pl.stringx')
 
