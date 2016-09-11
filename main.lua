@@ -11,7 +11,7 @@ require 'torch'
 require 'nn'
 require 'nngraph'
 require 'lfs'
-require 'util.misc'
+require 'util/misc.lua'
 
 BatchLoader = require 'util.BatchLoaderUnk'
 model_utils = require 'util.model_utils'
