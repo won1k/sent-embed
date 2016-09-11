@@ -11,10 +11,10 @@ require 'torch'
 require 'nn'
 require 'nngraph'
 require 'lfs'
-require 'util/misc.lua'
+require 'misc'
 
-BatchLoader = require 'util/BatchLoaderUnk.lua'
-model_utils = require 'util/model_utils.lua'
+BatchLoader = require 'BatchLoaderUnk'
+model_utils = require 'util.model_utils'
 
 local stringx = require('pl.stringx')
 
