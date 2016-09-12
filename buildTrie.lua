@@ -45,6 +45,8 @@ function nextWord(trie, model, num_words, currWord, t)
 	for i = 1, num_words do
 		nextWord(trie, model, num_words, maxIdx[i], t + 1)
 	end
+
+	print(t)
 end
 
 function main()
@@ -71,7 +73,8 @@ function main()
    	nextWord(trie, model, opt.num_words, firstWords[i], 1)
    end
 
-
+   -- Save trie
+   torch.save("trie", trie)
 end
 
 main()
