@@ -7,8 +7,6 @@ import numpy as np
 class Indexer:
     def __init__(self):
         self.counter = 1
-        self.chunk_counter = 1
-        self.pos_counter = 1
         self.d = {}
         self.rev = {}
         self.chunk_d = {}
@@ -35,6 +33,9 @@ class Indexer:
         for v, k in items:
             print >>out, k, v
         out.close()
+        f = h5py.File(args.outputfile + '.dict.hdf5', "w")
+        f["dict"] = np.array(items, dtype = int)
+        
 
 def get_data(args):
     target_indexer = Indexer()
