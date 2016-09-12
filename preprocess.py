@@ -33,9 +33,6 @@ class Indexer:
         for v, k in items:
             print >>out, k, v
         out.close()
-        f = h5py.File(args.outputfile + '.dict.hdf5', "w")
-        f["dict"] = np.array(items, dtype = int)
-        
 
 def get_data(args):
     target_indexer = Indexer()
