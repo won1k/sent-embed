@@ -79,11 +79,10 @@ function getState()
 			for j, submodule in ipairs(module.modules) do
 				if torch.type(submodule) == "nn.FastLSTM" then
 					if module.output ~= nil then
-						print(module.output)
-		         	currState[k] = {module.output:clone()}
+		         	currState[k] = {module.output[1]:clone()}
 		         	if module.cell ~= nil then
 		         		if currState[k] then
-		         			table.insert(currState[k], module.cell:clone())
+		         			table.insert(currState[k], module.cell[1]:clone())
 		         		end
 		         	end
 		         	k = k + 1
