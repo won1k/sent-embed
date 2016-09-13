@@ -80,13 +80,9 @@ function getState()
 				if torch.type(submodule) == "nn.FastLSTM" then
 					if module.output ~= nil then
 		         	currState[k] = {module.output[1]:clone()}
-		         else
-		         	currState[k] = {nil}
 		         end
 		         if module.cell ~= nil then
 		         	table.insert(currState[k], module.cell[1]:clone())
-		         else
-		         	table.insert(currState[k], nil)
 		         end
 		         k = k + 1
 		      end
@@ -102,10 +98,13 @@ end
 
 -- Assume currState = {1: {output, cell}, 2: {output, cell}, ...}
 function storeState(currState)
-	print(currState)
    for i = 1, #lstmLayers do
-   	lstmLayers[i].userPrevOutput = currState[i][1]:clone()
-   	lstmLayers[i].userPrevCell = currState[i][2]:clone()
+   	if currState[i][1] then
+   		lstmLayers[i].userPrevOutput = currState[i][1]:clone()
+   	end
+   	if currState[i][2] then
+   		lstmLayers[i].userPrevCell = currState[i][2]:clone()
+   	end
    end
 end
 
