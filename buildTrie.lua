@@ -38,7 +38,7 @@ function firstWord(data, num_words)
     return maxIdx
 end
 
-function nextWord(trie, num_words, currWord, prevState)
+function nextWord(trie, num_words, currWord, prevState, t)
 	if prevState then
 		storeState(prevState)
 	end
@@ -46,14 +46,14 @@ function nextWord(trie, num_words, currWord, prevState)
 	local nextWords = model:forward(torch.Tensor{currWord})[1]
 	local maxVal, maxIdx = nextWords:topk(num_words, true)
 
-	if maxIdx[1] == EOS then
+	if maxIdx[1] == EOS or t > opt.sent_len then
 		return
 	else
 		local currState = getState()
 		trie[currWord] = tds.Hash()
 		for i = 1, num_words do
 			model:forget()
-			nextWord(trie[currWord], num_words, maxIdx[i], currState)
+			nextWord(trie[currWord], num_words, maxIdx[i], currState, t + 1)
 		end
 	end
 end
@@ -136,7 +136,7 @@ function main()
    local firstWords = firstWord(data, opt.num_words)
    for i = 1, opt.num_words do
    	print(firstWords[i], i)
-   	nextWord(trie, opt.num_words, firstWords[i])
+   	nextWord(trie, opt.num_words, firstWords[i], 2)
    end
 
    -- Save trie
