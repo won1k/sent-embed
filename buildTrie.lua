@@ -49,9 +49,7 @@ function nextWord(trie, num_words, currWord, prevState)
 	if maxIdx[1] == EOS then
 		return
 	else
-		local currState = {}
-		k = 1
-		model:getState()
+		local currState = getState()
 		trie[currWord] = tds.Hash()
 		for i = 1, num_words do
 			nextWord(trie[currWord], num_words, maxIdx[i], currState)
@@ -72,11 +70,13 @@ function Module:getLSTMLayers()
    end
 end
 
-function Module:getState()
-   if self.modules then
-      for i, module in ipairs(self.modules) do
-         if torch.type(module) == "nn.FastLSTM" then
-            if module.output ~= nil then
+function getState()
+	local currState = {}
+	local k = 1
+	for i, module in ipairs(self.modules) do
+		for j, submodule in ipairs(module.modules) do
+			if torch.type(submodule) == "nn.FastLSTM" then
+				if module.output ~= nil then
             	currState[k] = {module.output:clone()}
             	if module.cell ~= nil then
             		if currState[k] then
@@ -85,11 +85,10 @@ function Module:getState()
             	end
             	k = k + 1
             end
-         else
-            module:getState()
          end
       end
    end
+   return currState
 end
 
 -- Assume currState = {1: {output, cell}, 2: {output, cell}, ...}
