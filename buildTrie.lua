@@ -19,6 +19,7 @@ cmd:option('-num_words', 5, 'number of top words to consider')
 cmd:option('-sent_len', 10, 'length of sentence')
 
 EOS = 3
+Module = nn.Module
 
 function firstWord(data, num_words)
     local firstWords = data:read('2'):all():long()[{{},{1}}]:squeeze()
@@ -112,7 +113,6 @@ function main()
    -- Load model
    model = torch.load(opt.loadfile)
    k = 1
-   Module = nn.Module
    lstmLayers = model:getLSTMLayers()
    print('model loaded!')
 
