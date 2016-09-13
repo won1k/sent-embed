@@ -38,7 +38,7 @@ function firstWord(data, num_words)
     return maxIdx
 end
 
-function nextWord(trie, num_words, currWord, prevState, t)
+function nextWord(trie, num_words, currWord, t, prevState)
 	if prevState then
 		storeState(prevState)
 	end
@@ -53,7 +53,7 @@ function nextWord(trie, num_words, currWord, prevState, t)
 		trie[currWord] = tds.Hash()
 		for i = 1, num_words do
 			model:forget()
-			nextWord(trie[currWord], num_words, maxIdx[i], currState, t + 1)
+			nextWord(trie[currWord], num_words, maxIdx[i], t+1, currState)
 		end
 	end
 end
