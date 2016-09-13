@@ -120,7 +120,7 @@ function main()
    -- Load data
    local data = hdf5.open(opt.datafile, 'r')
    nfeatures = data:read('nfeatures'):all():long()[1]
-   lengths = f:read('sent_lens'):all()
+   lengths = data:read('sent_lens'):all()
 
    -- Build trie
    local trie = tds.Hash()
