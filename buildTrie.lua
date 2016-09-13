@@ -125,6 +125,7 @@ function main()
    local trie = tds.Hash()
    local firstWords = firstWord(data, opt.num_words)
    for i = 1, opt.num_words do
+   	print(firstWords[i], i)
    	nextWord(trie, opt.num_words, firstWords[i])
    end
 
