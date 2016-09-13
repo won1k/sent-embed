@@ -52,6 +52,7 @@ function nextWord(trie, num_words, currWord, prevState)
 		local currState = getState()
 		trie[currWord] = tds.Hash()
 		for i = 1, num_words do
+			model:forget()
 			nextWord(trie[currWord], num_words, maxIdx[i], currState)
 		end
 	end
@@ -78,6 +79,7 @@ function getState()
 			for j, submodule in ipairs(module.modules) do
 				if torch.type(submodule) == "nn.FastLSTM" then
 					if module.output ~= nil then
+						print(module.output)
 		         	currState[k] = {module.output:clone()}
 		         	if module.cell ~= nil then
 		         		if currState[k] then
