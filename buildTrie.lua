@@ -74,19 +74,21 @@ function getState()
 	local currState = {}
 	local k = 1
 	for i, module in ipairs(model.modules) do
-		for j, submodule in ipairs(module.modules) do
-			if torch.type(submodule) == "nn.FastLSTM" then
-				if module.output ~= nil then
-            	currState[k] = {module.output:clone()}
-            	if module.cell ~= nil then
-            		if currState[k] then
-            			table.insert(currState[k], module.cell:clone())
-            		end
-            	end
-            	k = k + 1
-            end
-         end
-      end
+		if module.modules then
+			for j, submodule in ipairs(module.modules) do
+				if torch.type(submodule) == "nn.FastLSTM" then
+					if module.output ~= nil then
+		         	currState[k] = {module.output:clone()}
+		         	if module.cell ~= nil then
+		         		if currState[k] then
+		         			table.insert(currState[k], module.cell:clone())
+		         		end
+		         	end
+		         	k = k + 1
+		         end
+		      end
+		   end
+		end
    end
    return currState
 end
