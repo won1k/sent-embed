@@ -18,8 +18,13 @@ cmd:option('-gpu', 0, '>=0 if GPU, -1 if CPU')
 cmd:option('-num_words', 5, 'number of top words to consider')
 cmd:option('-sent_len', 10, 'length of sentence')
 
-function firstWord(sentences, num_words)
-    local firstWords = sentences[{{},{1}}]:squeeze()
+EOS = 3
+
+function firstWord(data, num_words)
+    local firstWords = data:read('2'):all():long()[{{},{1}}]:squeeze()
+    for i = 2, lengths:size(1) do
+    	firstWords = torch.cat(firstWords, data:read(tostring(lengths[i])):all():long()[{{},{1}}]:squeeze(), 1)
+    end
     local nsent = firstWords:size(1)
     local counts = torch.zeros(nfeatures):long()
     -- Counts
@@ -31,22 +36,66 @@ function firstWord(sentences, num_words)
     return maxIdx
 end
 
-function nextWord(trie, model, num_words, currWord, t)
-	-- Termination
-	if t == opt.sent_len then
-		return
-	end
-	-- Else build next layer
-	trie[currWord] = tds.Hash()
-	-- Get top words from language model
-	local topWords = model:forward(torch.Tensor{currWord})[1]
-	local maxVal, maxIdx = topWords:topk(num_words, true)
-	-- Recurse
-	for i = 1, num_words do
-		nextWord(trie, model, num_words, maxIdx[i], t + 1)
+function nextWord(trie, num_words, currWord, prevState)
+	if prevState then
+		storeState(prevState)
 	end
 
-	print(t)
+	local nextWords = model:forward(torch.Tensor{currWord})[1]
+	local maxVal, maxIdx = nextWords:topk(num_words, true)
+
+	if maxIdx[1] == EOS then
+		return
+	else
+		local currState = {}
+		k = 1
+		model:getState()
+		trie[currWord] = tds.Hash()
+		for i = 1, num_words do
+			nextWord(trie[currWord], num_words, maxIdx[i], currState)
+		end
+	end
+end
+
+function Module:getLSTMLayers()
+   if self.modules then
+      for i, module in ipairs(self.modules) do
+         if torch.type(module) == "nn.FastLSTM" then
+            lstmLayers[k] = module
+            k = k + 1
+         else
+            module:getLSTMLayers()
+         end
+      end
+   end
+end
+
+function Module:getState()
+   if self.modules then
+      for i, module in ipairs(self.modules) do
+         if torch.type(module) == "nn.FastLSTM" then
+            if module.output ~= nil then
+            	currState[k] = {module.output:clone()}
+            	if module.cell ~= nil then
+            		if currState[k] then
+            			table.insert(currState[k], module.cell:clone())
+            		end
+            	end
+            	k = k + 1
+            end
+         else
+            module:getState()
+         end
+      end
+   end
+end
+
+-- Assume currState = {1: {output, cell}, 2: {output, cell}, ...}
+function storeState(currState)
+   for i = 1, #lstmLayers do
+   	lstmLayers[i].userPrevOutput = nn.rnn.recursiveCopy(lstmLayers[i].userPrevOutput, currState[i][1])
+   	lstmLayers[i].userPrevCell = nn.rnn.recursiveCopy(lstmLayers[i].userPrevCell, currState[i][2])
+   end
 end
 
 function main()
@@ -60,20 +109,27 @@ function main()
       --cutorch.setDevice(opt.gpu + 1)
    end
 
-   -- Load model/data
+   -- Load model
    model = torch.load(opt.loadfile)
+   k = 1
+   Module = nn.Module
+   lstmLayers = model:getLSTMLayers()
    print('model loaded!')
-   data = hdf5.open(opt.datafile, 'r')
+
+   -- Load data
+   local data = hdf5.open(opt.datafile, 'r')
    nfeatures = data:read('nfeatures'):all():long()[1]
+   lengths = f:read('sent_lens'):all()
 
    -- Build trie
-   trie = tds.Hash()
-   local firstWords = firstWord(data:read(tostring(opt.sent_len)):all():long(), opt.num_words)
+   local trie = tds.Hash()
+   local firstWords = firstWord(data, opt.num_words)
    for i = 1, opt.num_words do
-   	nextWord(trie, model, opt.num_words, firstWords[i], 1)
+   	nextWord(trie, opt.num_words, firstWords[i])
    end
 
    -- Save trie
+   print('saving model...')
    torch.save("trie", trie)
 end
 
