@@ -73,7 +73,7 @@ end
 function getState()
 	local currState = {}
 	local k = 1
-	for i, module in ipairs(self.modules) do
+	for i, module in ipairs(model.modules) do
 		for j, submodule in ipairs(module.modules) do
 			if torch.type(submodule) == "nn.FastLSTM" then
 				if module.output ~= nil then
