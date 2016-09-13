@@ -113,7 +113,8 @@ function main()
    -- Load model
    model = torch.load(opt.loadfile)
    k = 1
-   lstmLayers = model:getLSTMLayers()
+   lstmLayers = {}
+   model:getLSTMLayers()
    print('model loaded!')
 
    -- Load data
