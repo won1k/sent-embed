@@ -91,14 +91,18 @@ function getState()
 		   end
 		end
    end
-   return currState
+   if #currState > 0 then
+   	return currState
+   else
+   	return nil
+   end
 end
 
 -- Assume currState = {1: {output, cell}, 2: {output, cell}, ...}
 function storeState(currState)
    for i = 1, #lstmLayers do
-   	lstmLayers[i].userPrevOutput = nn.rnn.recursiveCopy(lstmLayers[i].userPrevOutput, currState[i][1])
-   	lstmLayers[i].userPrevCell = nn.rnn.recursiveCopy(lstmLayers[i].userPrevCell, currState[i][2])
+   	lstmLayers[i].userPrevOutput = currState[i][1]:clone()
+   	lstmLayers[i].userPrevCell = currState[i][2]:clone()
    end
 end
 
