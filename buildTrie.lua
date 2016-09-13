@@ -100,6 +100,7 @@ end
 
 -- Assume currState = {1: {output, cell}, 2: {output, cell}, ...}
 function storeState(currState)
+	print(currState)
    for i = 1, #lstmLayers do
    	lstmLayers[i].userPrevOutput = currState[i][1]:clone()
    	lstmLayers[i].userPrevCell = currState[i][2]:clone()
