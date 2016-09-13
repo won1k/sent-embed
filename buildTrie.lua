@@ -22,10 +22,11 @@ EOS = 3
 Module = nn.Module
 
 function firstWord(data, num_words)
-    local firstWords = data:read('2'):all():long()[{{},{1}}]:squeeze()
+    local firstWords = data:read('2'):all():long()[{{},{1}}]
     for i = 2, lengths:size(1) do
-    	firstWords = torch.cat(firstWords, data:read(tostring(lengths[i])):all():long()[{{},{1}}]:squeeze(), 1)
+    	firstWords = torch.cat(firstWords, data:read(tostring(lengths[i])):all():long()[{{},{1}}], 1)
     end
+    firstWords = firstWords:squeeze()
     local nsent = firstWords:size(1)
     local counts = torch.zeros(nfeatures):long()
     -- Counts
