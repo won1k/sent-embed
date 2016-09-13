@@ -80,13 +80,15 @@ function getState()
 				if torch.type(submodule) == "nn.FastLSTM" then
 					if module.output ~= nil then
 		         	currState[k] = {module.output[1]:clone()}
-		         	if module.cell ~= nil then
-		         		if currState[k] then
-		         			table.insert(currState[k], module.cell[1]:clone())
-		         		end
-		         	end
-		         	k = k + 1
+		         else
+		         	currState[k] = {nil}
 		         end
+		         if module.cell ~= nil then
+		         	table.insert(currState[k], module.cell[1]:clone())
+		         else
+		         	table.insert(currState[k], nil)
+		         end
+		         k = k + 1
 		      end
 		   end
 		end
