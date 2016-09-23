@@ -37,8 +37,9 @@ class Indexer:
 def get_data(args):
     target_indexer = Indexer()
     #add special words to indices in the target_indexer
-    target_indexer.convert("<s>")
+    target_indexer.convert("<blank>")
     target_indexer.convert("<unk>")
+    target_indexer.convert("<s>")
     target_indexer.convert("</s>")
 
     def sequencer_template(datafile, sentences, pos_seqs, chunk_seqs):
@@ -69,14 +70,14 @@ def get_data(args):
     def add_padding(sentences, pos_seqs, chunk_seqs, outputs, sent_lens, dwin):
         for length in sent_lens:
             for idx, sentence in enumerate(sentences[length]):
-                sentences[length][idx] = [target_indexer.convert('PAD')] * (dwin/2) + \
-                    sentences[length][idx] + [target_indexer.convert('PAD')] * (dwin/2)
-                pos_seqs[length][idx] = [target_indexer.convert_pos('PAD')] * (dwin/2) + \
-                    pos_seqs[length][idx] + [target_indexer.convert_pos('PAD')] * (dwin/2)
-                chunk_seqs[length][idx] = [target_indexer.convert_chunk('PAD')] * (dwin/2) + \
-                    chunk_seqs[length][idx] + [target_indexer.convert_chunk('PAD')] * (dwin/2)
-                outputs[length][idx] = [target_indexer.convert('PAD')] * (dwin/2) + \
-                    outputs[length][idx] + [target_indexer.convert('PAD')] * (dwin/2)
+                sentences[length][idx] = [target_indexer.convert('<blank>')] * (dwin/2) + \
+                    sentences[length][idx] + [target_indexer.convert('<blank>')] * (dwin/2)
+                pos_seqs[length][idx] = [target_indexer.convert_pos('<blank>')] * (dwin/2) + \
+                    pos_seqs[length][idx] + [target_indexer.convert_pos('<blank>')] * (dwin/2)
+                chunk_seqs[length][idx] = [target_indexer.convert_chunk('<blank>')] * (dwin/2) + \
+                    chunk_seqs[length][idx] + [target_indexer.convert_chunk('<blank>')] * (dwin/2)
+                outputs[length][idx] = [target_indexer.convert('<blank>')] * (dwin/2) + \
+                    outputs[length][idx] + [target_indexer.convert('<blank>')] * (dwin/2)
         return sentences, pos_seqs, chunk_seqs, outputs
 
     def convert(datafile, outfile, dwin):
