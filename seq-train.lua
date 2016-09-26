@@ -1,3 +1,4 @@
+package.path = package.path..";/n/rush_lab/wonlee/sent-embed/?.lua"
 require 'nn'
 require 'nngraph'
 require 'hdf5'
