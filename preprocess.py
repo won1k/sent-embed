@@ -79,7 +79,7 @@ def get_data(args):
                     outputs[length][idx] + [target_indexer.convert('PAD')] * (dwin/2)
         return sentences, pos_seqs, chunk_seqs, outputs
 
-    def convert(datafile, outfile, dwin):
+    def convert(datafile, outfile):
         # Parse and convert data
         with open(datafile, 'r') as f:
             sentences = {}
@@ -105,8 +105,8 @@ def get_data(args):
         #text_output(datafile, sentences)
 
         # Add padding for windowed models
-        if dwin > 0:
-            sentences, pos_seqs, chunk_seqs, outputs = add_padding(sentences, pos_seqs, chunk_seqs, outputs, sent_lens, dwin)
+        #if dwin > 0:
+        #    sentences, pos_seqs, chunk_seqs, outputs = add_padding(sentences, pos_seqs, chunk_seqs, outputs, sent_lens, dwin)
 
         # Output HDF5 for torch
         f = h5py.File(outfile, "w")
@@ -122,9 +122,9 @@ def get_data(args):
         #f["nclasses_chunk"] = np.array([target_indexer.chunk_counter - 1], dtype=int)
         f["dwin"] = np.array([dwin], dtype=int)
 
-    convert(args.trainfile, args.outputfile + ".hdf5", args.dwin)
+    convert(args.trainfile, args.outputfile + ".hdf5")
     target_indexer.lock()
-    convert(args.testfile, args.outputfile + "_test" + ".hdf5", args.dwin)
+    convert(args.testfile, args.outputfile + "_test" + ".hdf5")
     target_indexer.write(args.outputfile + ".dict")
     #target_indexer.write_chunks(args.outputfile + ".chunk.dict")
     #target_indexer.write_pos(args.outputfile + ".pos.dict")
@@ -137,7 +137,6 @@ def main(arguments):
     parser.add_argument('trainfile', help="Raw chunking text file", type=str) # ptb/train.txt
     parser.add_argument('testfile', help="Raw chunking test text file", type=str) # ptb/test.txt
     parser.add_argument('outputfile', help="HDF5 output file", type=str) # convert_seq/ptb_seq
-    parser.add_argument('dwin', help="Window dimension (0 if no padding)", type=int) # 5
     args = parser.parse_args(arguments)
 
     # Do conversion
