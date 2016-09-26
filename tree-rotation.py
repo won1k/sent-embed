@@ -5,7 +5,7 @@ from StringIO import StringIO
 DEPTH_LIMIT = 4
 TREE_PROB = 0.6
 
-prefix = open("data/prefix_test.txt", "r")
+prefix = open("data/prefix.txt", "r")
 trees = []
 
 # Load trees into list
@@ -52,8 +52,8 @@ def print_prefix(t, out, depth = 0):
     if depth == 0:
         print >>out, ""
 
-infix_rot = open("data/infix_test_rot.txt","w")
-prefix_rot = open("data/prefix_test_rot.txt","w")
+infix_rot = open("data/infix_rot.txt","w")
+prefix_rot = open("data/prefix_rot.txt","w")
 
 all = []
 seen = {}
