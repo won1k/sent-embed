@@ -51,6 +51,7 @@ def print_prefix(t, out, depth = 0):
 all = []
 seen = {}
 for i in range(100000):
+    print(i)
     m = make_expression()
     a = StringIO()
     b = StringIO()
