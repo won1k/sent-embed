@@ -1,3 +1,4 @@
+package.path = package.path..";/n/rush_lab/wonlee/sent-embed/?.lua"
 local beam = require 's2sa.beam'
 
 function main()
