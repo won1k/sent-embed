@@ -16,8 +16,8 @@ def make_expression(depth = 0):
         return nltk.Tree("*", [make_expression(depth+1) for i in range(n)])
 
 
-infix = open("data/infix_test.txt", "w")
-prefix = open("data/prefix_test.txt", "w")
+infix = open("data/infix.txt", "w")
+prefix = open("data/prefix.txt", "w")
 
 def print_infix(t, out, depth = 0):
     if len(t) == 0:
